@@ -38,7 +38,10 @@ class EmployeeChart(http.Controller):
 
     @http.route('/get/parent/employee', type='json', auth='public', methods=['POST'], csrf=False)
     def get_employee_ids(self):
-        employees = request.env['hr.employee'].sudo().search([('parent_id', '=', False)])
+        # Get the active company
+        company_id = request.env.user.company_id.id
+        employees = request.env['hr.employee'].sudo().search(
+            [('parent_id', '=', False), ('company_id', '=', company_id)])
         names = []
         key = []
         if len(employees) == 1:
